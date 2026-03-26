@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Portal | CareerWay Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --primary: #4F46E5; 
+            --accent: #10B981;
+            --bg: #F8FAFC; 
+            --card: #FFFFFF; 
+            --text-main: #1F2937; 
+            --text-muted: #6B7280;
+            --border: #E2E8F0; 
+        }
+        
+        body { background: var(--bg); color: var(--text-main); font-family: 'Poppins', sans-serif; padding-top: 80px; padding-bottom: 50px;}
+        
+        /* --- Navbar --- */
+        .navbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .brand-logo { font-weight: 700; font-size: 1.4rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .btn-logout { border: 1px solid #EF4444; color: #EF4444; border-radius: 50px; padding: 6px 20px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .btn-logout:hover { background: #EF4444; color: white; }
+
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 15px;}
+        
+        .btn-create { background: linear-gradient(135deg, #8B5CF6 0%, #4F46E5 100%); color: white; padding: 12px 25px; border-radius: 50px; border: none; font-weight: 600; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;}
+        .btn-create:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5); color: white; }
+
+        /* --- Stat Cards --- */
+        .stat-card { background: var(--card); border-radius: 15px; padding: 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 1.2rem; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1); border-color: var(--primary);}
+        
+        .icon-box { width: 55px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .stat-blue { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); }
+        .stat-purple { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+        .stat-green { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+        
+        /* --- Table Styling --- */
+        .table-container { background: var(--card); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; margin-top: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02);}
+        .table thead th { background: #F8FAFC; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 1.2rem 1.5rem; font-weight: 700; border-bottom: 2px solid var(--border);}
+        .table tbody td { padding: 1.2rem 1.5rem; vertical-align: middle; border-bottom: 1px solid var(--border); }
+        
+        .job-title { font-weight: 700; color: var(--text-main); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;}
+        .job-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; display: block;}
+        
+        .status-badge { padding: 6px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        .status-active { background: #ECFDF5; color: #10B981; border: 1px solid #D1FAE5;}
+        
+        .btn-action { width: 35px; height: 35px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; text-decoration: none; font-size: 1rem;}
+        
+        /* Copy Link Button */
+        .btn-copy { background: #F1F5F9; color: #64748B; border: 1px solid #E2E8F0; width: 28px; height: 28px; border-radius: 6px; font-size: 0.8rem; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;}
+        .btn-copy:hover { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        /* Search Bar */
+        .search-wrapper { position: relative; width: 300px; }
+        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-input { width: 100%; padding: 10px 15px 10px 40px; border-radius: 50px; border: 1px solid var(--border); background: #F8FAFC; outline: none; transition: 0.3s; font-size: 0.9rem;}
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); background: white;}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <a href="#" class="brand-logo"><i class="fas fa-robot"></i> CareerWay Recruiter</a>
+        <div class="d-flex align-items-center gap-4">
+            <span class="text-muted small fw-bold d-none d-sm-block">Hello, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert" style="border-radius: 10px;">
+            <i class="fas fa-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-header">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: var(--primary);">Dashboard Overview</h2>
+            <p class="text-muted mb-0">Track your hiring pipeline and analyze job performance.</p>
+        </div>
+        <a href="{{ url_for('post_job') }}" class="btn-create">
+            <i class="fas fa-plus"></i> Post New Job
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="icon-box stat-blue"><i class="fas fa-briefcase"></i></div>
+                <div>
+                    <h2 class="fw-bold mb-0 text-dark">{{ jobs|length }}</h2>
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Active Postings</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="icon-box stat-purple"><i class="fas fa-users"></i></div>
+                <div>
+                    {% set total_apps = stats.values() | sum %}
+                    <h2 class="fw-bold mb-0 text-dark">{{ total_apps }}</h2>
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Total Applications</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="icon-box stat-green"><i class="fas fa-chart-line"></i></div>
+                <div>
+                    {% if jobs|length > 0 %}
+                        <h2 class="fw-bold mb-0 text-dark">{{ (total_apps / jobs|length)|round(1) }}</h2>
+                    {% else %}
+                        <h2 class="fw-bold mb-0 text-dark">0</h2>
+                    {% endif %}
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Avg Apps / Job</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="p-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <h5 class="fw-bold mb-0 text-dark">Recent Job Postings</h5>
+            
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="jobSearchInput" class="search-input" placeholder="Search by role or location..." onkeyup="filterTable()">
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table mb-0" id="jobsTable">
+                <thead>
+                    <tr>
+                        <th>Role & Location</th>
+                        <th>Date Posted</th>
+                        <th>Candidates</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr class="job-row">
+                        <td>
+                            <div class="job-title">
+                                {{ job.title }}
+                                <button class="btn-copy" onclick="copyJobLink(this, '{{ url_for('view_job', job_id=job.id, _external=True) }}')" title="Copy Public Share Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <span class="job-meta"><i class="fas fa-map-marker-alt text-danger me-1"></i> {{ job.location }} <span class="mx-1 opacity-50">|</span> <i class="fas fa-laptop-house text-primary me-1"></i> {{ job.work_mode }}</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ job.date_posted.strftime('%d %b, %Y') }}</div>
+                            <small class="text-muted">ID: #{{ job.id }}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-bold text-dark fs-5">{{ stats[job.id] }}</span>
+                                {% if stats[job.id] > 0 %}
+                                    <span class="badge bg-primary text-white border-0" style="font-size: 0.65em; padding: 4px 6px;">New</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-active"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active</span></td>
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ url_for('job_applicants', job_id=job.id) }}" class="btn btn-sm btn-outline-primary fw-bold px-3 shadow-sm d-flex align-items-center" style="border-radius: 8px;">
+                                    View <span class="badge bg-primary text-white ms-2">{{ stats[job.id] }}</span>
+                                </a>
+                                
+                                <a href="{{ url_for('delete_job', job_id=job.id) }}" class="btn-action btn-outline-danger border shadow-sm" onclick="return confirm('Warning: Are you sure you want to delete this job? All associated candidate applications will also be permanently deleted.');" title="Delete Job">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="opacity-25 mb-3"><i class="fas fa-folder-open fa-4x text-primary"></i></div>
+                            <h5 class="fw-bold text-dark">No jobs posted yet</h5>
+                            <p class="text-muted">Create your first listing to start hiring amazing talent.</p>
+                            <a href="{{ url_for('post_job') }}" class="btn-create mt-2">Post a Job Now</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // 1. Real-time Job Table Search Filtering
+    function filterTable() {
+        const input = document.getElementById("jobSearchInput");
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById("jobsTable");
+        const rows = table.getElementsByClassName("job-row");
+
+        for (let i = 0; i < rows.length; i++) {
+            // Get the text from the first column (Role & Location)
+            let cell = rows[i].getElementsByTagName("td")[0];
+            if (cell) {
+                let txtValue = cell.textContent || cell.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    rows[i].style.display = ""; // Show row
+                } else {
+                    rows[i].style.display = "none"; // Hide row
+                }
+            }
+        }
+    }
+
+    // 2. Quick Copy Public Job Link for Sharing
+    function copyJobLink(btnElement, url) {
+        // Copy to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+            // Visual feedback
+            const icon = btnElement.querySelector('i');
+            icon.className = "fas fa-check text-success";
+            btnElement.style.borderColor = "#10B981";
+            
+            // Revert back after 2 seconds
+            setTimeout(() => {
+                icon.className = "fas fa-link";
+                btnElement.style.borderColor = "#E2E8F0";
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert("Copy failed. Please copy manually.");
+        });
+    }
+</script>
+
+</body>
+</html>

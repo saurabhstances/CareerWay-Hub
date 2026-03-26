@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job | CareerWay Recruiter</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --primary: #4F46E5; 
+            --accent: #10B981;
+            --bg: #F8FAFC; 
+            --card: #FFFFFF; 
+            --text-main: #1F2937; 
+            --text-muted: #6B7280;
+            --border: #E2E8F0; 
+        }
+        
+        body { background: var(--bg); color: var(--text-main); font-family: 'Poppins', sans-serif; padding-top: 80px; padding-bottom: 60px;}
+        
+        /* --- Navbar --- */
+        .navbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .brand-logo { font-weight: 700; font-size: 1.4rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        
+        /* --- Form Container --- */
+        .form-wrapper { max-width: 850px; margin: 0 auto; }
+        .form-card { background: var(--card); border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border); }
+        
+        .section-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; margin-bottom: 20px; border-bottom: 2px solid #EEF2FF; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        
+        /* --- Custom Inputs --- */
+        .form-label { font-weight: 600; font-size: 0.9rem; color: #4B5563; margin-bottom: 8px; }
+        .input-group-text { background: #F8FAFC; border: 1px solid #CBD5E1; border-right: none; color: #9CA3AF; }
+        .form-control, .form-select { border: 1px solid #CBD5E1; padding: 12px 15px; border-radius: 8px; font-size: 0.95rem; background: #F8FAFC; transition: 0.3s; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); background: white; }
+        .input-group .form-control { border-left: none; padding-left: 0; }
+        .input-group .form-control:focus { border-left: none; }
+        
+        /* --- AI Magic Button --- */
+        .ai-btn { background: linear-gradient(135deg, #8B5CF6 0%, #4F46E5 100%); color: white; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); float: right;}
+        .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.5); color: white; }
+        
+        /* --- Submit Button --- */
+        .btn-submit { background: var(--primary); color: white; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; border: none; width: 100%; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);}
+        .btn-submit:hover { background: #4338CA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <a href="{{ url_for('recruiter_dashboard') }}" class="brand-logo"><i class="fas fa-robot"></i> CareerWay Recruiter</a>
+        <a href="{{ url_for('recruiter_dashboard') }}" class="text-decoration-none text-muted fw-bold transition-200 hover-primary">
+            <i class="fas fa-times me-1"></i> Cancel
+        </a>
+    </div>
+</nav>
+
+<div class="container form-wrapper">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: var(--text-main);">Create Job Listing</h2>
+            <p class="text-muted mb-0">Publish a new opportunity to the CareerWay platform.</p>
+        </div>
+        <a href="{{ url_for('recruiter_dashboard') }}" class="btn btn-outline-secondary btn-sm fw-bold px-3 py-2" style="border-radius: 8px;">
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </a>
+    </div>
+
+    <div class="form-card">
+        <form action="{{ url_for('post_job') }}" method="POST">
+            
+            <div class="section-title"><i class="fas fa-info-circle"></i> 1. Job Details</div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Job Title <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                        <input type="text" name="title" id="jobTitle" class="form-control" placeholder="e.g. Senior Python Developer" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Company Name <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-building"></i></span>
+                        <input type="text" name="company" id="jobCompany" class="form-control" placeholder="e.g. TechCorp Solutions" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Office Location <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" name="location" class="form-control" placeholder="e.g. Mumbai, India (or Remote)" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title mt-5"><i class="fas fa-list-check"></i> 2. Requirements & Specs</div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Work Mode</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-laptop-house"></i></span>
+                        <select name="work_mode" class="form-select">
+                            <option value="On-Site">On-Site</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="Remote">Fully Remote</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Experience Required</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user-clock"></i></span>
+                        <select name="experience" class="form-select">
+                            <option value="Fresher">Fresher (0 Years)</option>
+                            <option value="1-3 Years">1 - 3 Years</option>
+                            <option value="3-5 Years">3 - 5 Years</option>
+                            <option value="5+ Years">5+ Years</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Salary Range</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                        <input type="text" name="salary" class="form-control" placeholder="e.g. 5 - 8 LPA">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Required Skills (Comma Separated) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-code"></i></span>
+                        <input type="text" name="skills" id="jobSkills" class="form-control" placeholder="e.g. Python, Django, SQL, AWS" required>
+                    </div>
+                    <small class="text-muted mt-1 d-block"><i class="fas fa-lightbulb text-warning"></i> Our AI uses these skills to automatically rank the best candidates for you!</small>
+                </div>
+            </div>
+
+            <div class="section-title mt-5">
+                <span><i class="fas fa-align-left"></i> 3. Job Description</span>
+            </div>
+            
+            <div class="mb-2" style="overflow: hidden;">
+                <label class="form-label float-start">Role description, responsibilities, and perks</label>
+                <button type="button" class="ai-btn" id="aiBtn" onclick="generateDescription()">
+                    <i class="fas fa-magic"></i> Auto-Write with AI
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <textarea name="description" id="jobDesc" class="form-control" rows="8" placeholder="Describe the day-to-day responsibilities, company culture, and what you are looking for..." required></textarea>
+                <small class="text-muted mt-2 d-block">Click the purple AI button above to instantly generate a professional description based on your title and skills!</small>
+            </div>
+
+            <hr class="my-5 opacity-25">
+
+            <button type="submit" class="btn-submit">
+                Publish Job Listing <i class="fas fa-paper-plane ms-2"></i>
+            </button>
+            <p class="text-center text-muted small mt-3"><i class="fas fa-lock me-1"></i> Securely protected by CareerWay Recruiter Portal</p>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function generateDescription() {
+        const title = document.getElementById('jobTitle').value.trim();
+        const company = document.getElementById('jobCompany').value.trim();
+        const skills = document.getElementById('jobSkills').value.trim();
+        const textarea = document.getElementById('jobDesc');
+        const btn = document.getElementById('aiBtn');
+
+        if (!title || !company || !skills) {
+            alert("Please fill in the Job Title, Company Name, and Required Skills first so the AI knows what to write!");
+            return;
+        }
+
+        // Change button state to loading
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        btn.disabled = true;
+        textarea.value = "AI is typing...\n\nAnalyzing role requirements for " + title + "...\nStructuring professional responsibilities...";
+
+        // We will creatively use the existing resume enhancer route in app.py to format our job description!
+        const promptData = {
+            type: "Job Description for a " + title + " at " + company,
+            text: "Make a professional job description listing the responsibilities and requirements based on these skills: " + skills + ". Write it clearly. No asterisks."
+        };
+
+        fetch('/api/enhance_resume_text', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(promptData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                textarea.value = "Sorry, the AI is currently busy. Please type the description manually.";
+            } else {
+                // Success! Inject the clean text into the textarea
+                textarea.value = data.enhanced_text;
+            }
+            // Reset button
+            btn.innerHTML = '<i class="fas fa-magic"></i> Auto-Write with AI';
+            btn.disabled = false;
+        })
+        .catch(err => {
+            textarea.value = "Connection failed. Please type the description manually.";
+            btn.innerHTML = '<i class="fas fa-magic"></i> Auto-Write with AI';
+            btn.disabled = false;
+        });
+    }
+</script>
+
+</body>
+</html>

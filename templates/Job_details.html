@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ job.title }} | CareerWay Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --accent-color: #10B981;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E2E8F0;
+            --grid-bg: #F8FAFC;
+        }
+
+        /* Dark Mode Theme Variables */
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --card-bg: #1F2937;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #374151;
+            --grid-bg: #111827;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-top: 80px;
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- Navbar --- */
+        .navbar { background-color: var(--card-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.02); padding: 1rem 2rem; position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid var(--border-color); transition: 0.3s;}
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+        .nav-link { color: var(--text-muted) !important; font-weight: 500; transition: color 0.3s; margin-left: 15px;}
+        .nav-link:hover { color: var(--primary-color) !important; }
+        .btn-logout { border: 1px solid #EF4444; color: #EF4444; border-radius: 50px; padding: 6px 20px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; margin-left: 15px;}
+        .btn-logout:hover { background: #EF4444; color: white; }
+
+        /* --- Layout & Animations --- */
+        .job-container { max-width: 900px; margin: 0 auto; position: relative;}
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* 🔥 STICKY BACK BUTTON CSS 🔥 */
+        .sticky-back-wrapper {
+            position: sticky;
+            top: 85px; 
+            z-index: 102;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            pointer-events: none; 
+        }
+        .btn-back-sticky {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            pointer-events: auto; 
+        }
+        .btn-back-sticky:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateX(-4px); 
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.2);
+        }
+
+        /* --- Header Section --- */
+        .job-header-card { background: var(--card-bg); border-radius: 16px 16px 0 0; padding: 40px 40px 25px 40px; border: 1px solid var(--border-color); border-bottom: none; transition: 0.3s;}
+        .job-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 800; color: var(--text-main); margin-bottom: 10px; line-height: 1.2;}
+        .company-name { font-size: 1.1rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;}
+        
+        .meta-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .meta-item { display: flex; align-items: center; gap: 12px; color: var(--text-main); font-size: 1rem; font-weight: 500;}
+        .meta-item i { color: var(--text-muted); width: 20px; text-align: center; font-size: 1.1rem;}
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-pill { background: var(--grid-bg); color: var(--text-main); padding: 6px 15px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-color);}
+
+        /* --- Highlights Grid Section --- */
+        .highlights-card { background: var(--card-bg); border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 0 40px 30px 40px; transition: 0.3s;}
+        .highlights-grid { background: var(--grid-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; transition: 0.3s;}
+        
+        .grid-box { display: flex; flex-direction: column; gap: 5px; }
+        .grid-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .grid-value { font-size: 0.95rem; font-weight: 700; color: var(--text-main); display: flex; align-items: flex-start; gap: 8px;}
+        .grid-value i { color: var(--primary-color); opacity: 0.8; margin-top: 3px;}
+
+        /* --- Description Section --- */
+        .desc-card { background: var(--card-bg); border-radius: 0 0 16px 16px; padding: 30px 40px 50px 40px; border: 1px solid var(--border-color); border-top: none; box-shadow: 0 10px 25px rgba(0,0,0,0.02); transition: 0.3s;}
+        
+        .section-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; border-top: 1px solid var(--border-color); padding-top: 30px;}
+        .section-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin: 0;}
+        .ai-badge { background: rgba(109, 40, 217, 0.1); color: #6D28D9; border: 1px solid rgba(109, 40, 217, 0.2); font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 50px; display: inline-flex; align-items: center; gap: 5px;}
+        [data-theme="dark"] .ai-badge { background: rgba(139, 92, 246, 0.2); color: #C4B5FD; }
+
+        /* Description HTML Formatting */
+        .desc-content { font-size: 0.95rem; line-height: 1.7; color: var(--text-main); }
+        .desc-content h3, .desc-content h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-top: 25px; margin-bottom: 10px;}
+        .desc-content ul { padding-left: 20px; margin-bottom: 20px; }
+        .desc-content li { margin-bottom: 8px; }
+        .desc-content a { color: var(--primary-color); text-decoration: none; font-weight: 600;}
+        
+        /* Strict Table Formatting for Scraped Govt Sites */
+        .desc-content table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 25px 0; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background: var(--card-bg);}
+        .desc-content th { background-color: var(--grid-bg); border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 15px; text-align: left; font-weight: 700; color: var(--text-main); }
+        .desc-content td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 15px; color: var(--text-main);}
+        .desc-content tr:last-child td { border-bottom: none; }
+        .desc-content th:last-child, .desc-content td:last-child { border-right: none; }
+
+        /* 🔥 AGGRESSIVE DARK MODE FIX FOR INVISIBLE SARKARIRESULT TEXT 🔥 */
+        /* This forces EVERY single element inside the table to turn white in dark mode */
+        [data-theme="dark"] .desc-content,
+        [data-theme="dark"] .desc-content * {
+            color: #F9FAFB !important; 
+            background-color: transparent !important;
+            border-color: #374151 !important;
+        }
+        [data-theme="dark"] .desc-content a,
+        [data-theme="dark"] .desc-content a * {
+            color: #818CF8 !important; /* Bright blue for links so they are readable */
+        }
+        
+        @media (max-width: 768px) {
+            .job-header-card, .highlights-card, .desc-card { padding: 25px 20px; }
+            .sticky-back-wrapper { top: 75px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <i class="fa-solid fa-robot"></i> CareerWay Hub
+            </a>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sm btn-outline-secondary rounded-circle d-lg-none me-2" onclick="toggleTheme()" style="width: 35px; height: 35px;"><i class="fas fa-moon"></i></button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item d-none d-lg-block"><button class="btn btn-sm btn-outline-secondary rounded-circle me-3" onclick="toggleTheme()" style="width: 35px; height: 35px;"><i class="fas fa-moon"></i></button></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('resume_builder') }}">Resume Builder</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('library') }}">Library</a></li>
+                    <li class="nav-item"><a class="btn-logout" href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container job-container">
+        
+        <div class="sticky-back-wrapper animate-fade-up">
+            <a href="{{ url_for('dashboard') }}" class="btn-back-sticky">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="job-header-card animate-fade-up delay-1">
+            <h1 class="job-title">{{ job.title }}</h1>
+            <div class="company-name">
+                <i class="fa-regular fa-building text-primary"></i> {{ job.company }}
+                {% if job.category and job.category != 'General' %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-2" style="font-size: 0.7rem;">{{ job.category }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="meta-list">
+                <div class="meta-item">
+                    <i class="fa-solid fa-location-dot text-danger"></i> {{ job.location }}
+                </div>
+                {% if job.salary and job.salary not in ['Not Disclosed', 'Check Notice'] %}
+                <div class="meta-item">
+                    <i class="fa-solid fa-wallet text-success"></i> <span class="fw-bold">{{ job.salary }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="tags-container">
+                <span class="tag-pill"><i class="fa-regular fa-clock"></i> {{ job.job_type }} Job</span>
+                
+                {% if job.last_date and job.last_date != 'Check Notice' %}
+                    <span class="tag-pill text-danger bg-danger bg-opacity-10 border-danger"><i class="fa-regular fa-calendar-xmark"></i> Deadline: {{ job.last_date }}</span>
+                {% else %}
+                    <span class="tag-pill text-success bg-success bg-opacity-10 border-success"><i class="fa-solid fa-bolt"></i> Actively Hiring</span>
+                {% endif %}
+            </div>
+        </div>
+
+       <div class="highlights-card animate-fade-up delay-2">
+            <div class="highlights-grid">
+                
+                {% if job.work_mode %}
+                <div class="grid-box">
+                    <span class="grid-label">Work Mode</span>
+                    <span class="grid-value"><i class="fas fa-laptop-house"></i> {{ job.work_mode }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.experience_req %}
+                <div class="grid-box">
+                    <span class="grid-label">Experience Required</span>
+                    <span class="grid-value"><i class="fas fa-user-tie"></i> {{ job.experience_req }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.min_qualification and job.min_qualification not in ['Check Notice', 'See Notice'] %}
+                <div class="grid-box">
+                    <span class="grid-label">Minimum Education</span>
+                    <span class="grid-value"><i class="fas fa-graduation-cap"></i> {{ job.min_qualification }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.age_limit and job.age_limit not in ['Check Notice', 'See Notice'] %}
+                <div class="grid-box">
+                    <span class="grid-label">Age Limit</span>
+                    <span class="grid-value"><i class="fas fa-user-clock"></i> {{ job.age_limit }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.application_fee and job.application_fee not in ['Check Notice', 'See Notice'] %}
+                <div class="grid-box">
+                    <span class="grid-label">Application Fee</span>
+                    <span class="grid-value"><i class="fas fa-receipt"></i> 
+                        <span style="font-size: 0.85rem; line-height: 1.4;">{{ job.application_fee }}</span>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if job.skills and job.job_type == 'Private' %}
+                <div class="grid-box" style="grid-column: 1 / -1;">
+                    <span class="grid-label">Required Skills</span>
+                    <span class="grid-value"><i class="fas fa-code"></i> {{ job.skills }}</span>
+                </div>
+                {% endif %}
+                
+                {% if job.application_start_date and job.job_type == 'Govt' %}
+                <div class="grid-box" style="grid-column: 1 / -1;">
+                    <span class="grid-label">Important Dates</span>
+                    <span class="grid-value text-muted" style="font-size: 0.85rem;">
+                        <i class="fas fa-calendar-alt text-primary"></i> 
+                        Starts: <strong>{{ job.application_start_date }}</strong> &nbsp;|&nbsp; Ends: <strong>{{ job.last_date }}</strong>
+                    </span>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="desc-card animate-fade-up delay-3" style="padding-bottom: 20px;">
+            <div class="section-header">
+                <h3 class="section-title">About the opportunity</h3>
+                <span class="ai-badge"><i class="fas fa-sparkles text-warning"></i> Official Details</span>
+            </div>
+
+            <div class="desc-content mb-4">
+                {{ job.description | safe }}
+            </div>
+
+            <div class="mt-4 pt-4 border-top">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3 rounded-4" style="background: var(--grid-bg); border: 1px solid var(--border-color);">
+                    <div>
+                        <h6 class="mb-0 fw-bold" style="color: var(--text-main);">Interested?</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.75rem;">Submit your details via the form.</p>
+                    </div>
+                    
+                    {% if job.job_type == 'Private' %}
+                        <a href="{{ url_for('apply_process', job_id=job.id) }}" class="btn-back-sticky" style="background: var(--primary-color); color: white; border: none; padding: 8px 20px; font-size: 0.85rem; pointer-events: auto; text-decoration: none;">
+                            <i class="fa-solid fa-file-signature"></i> Apply Now
+                        </a>
+                    {% else %}
+                        <div class="ai-badge" style="font-size: 0.7rem;">
+                            <i class="fas fa-info-circle text-primary"></i> Apply via links above
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                document.querySelectorAll('.fa-moon').forEach(el => el.classList.replace('fa-sun', 'fa-moon'));
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                document.querySelectorAll('.fa-moon').forEach(el => el.classList.replace('fa-moon', 'fa-sun'));
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const contentContainer = document.querySelector('.desc-content');
+            if (!contentContainer) return;
+
+            // 1. Target junk keywords to remove social media rows from Sarkari tables
+            const junkKeywords = [
+                'whatsapp', 'telegram', 'instagram', 'mobile app', 
+                'youtube', 'facebook', 'twitter', 'follow us', 'join our'
+            ];
+
+            const tableRows = contentContainer.querySelectorAll('tr');
+            tableRows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                const isJunk = junkKeywords.some(keyword => rowText.includes(keyword));
+                if (isJunk) row.remove(); 
+            });
+
+            // 2. Format Links
+            const allLinks = contentContainer.querySelectorAll('a');
+            allLinks.forEach(link => {
+                const linkText = link.textContent.toLowerCase();
+                if (junkKeywords.some(keyword => linkText.includes(keyword))) {
+                    link.remove();
+                } else {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer'); 
+                    link.classList.add('fw-bold', 'text-decoration-none');
+                    if(linkText.includes('click') || linkText.includes('download') || linkText.includes('apply')) {
+                        link.classList.add('text-primary');
+                    }
+                }
+            });
+
+            // 3. Strip hardcoded SarkariResult colors to ensure Dark Mode CSS can take over
+            const allElements = contentContainer.querySelectorAll('*');
+            allElements.forEach(el => {
+                if (el.hasAttribute('color')) el.removeAttribute('color');
+                if (el.hasAttribute('bgcolor')) el.removeAttribute('bgcolor');
+                
+                if (el.style.color === 'black' || el.style.color === '#000000' || el.style.color === 'rgb(0, 0, 0)') {
+                    el.style.color = '';
+                }
+                if (el.style.backgroundColor === 'white' || el.style.backgroundColor === '#ffffff' || el.style.backgroundColor === 'rgb(255, 255, 255)') {
+                    el.style.backgroundColor = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

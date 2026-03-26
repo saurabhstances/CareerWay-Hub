@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Coach | CareerWay Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --border-color: #E2E8F0;
+        }
+
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); padding-top: 80px; }
+
+        /* Navbar */
+        .navbar { background-color: var(--card-bg) !important; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 0.8rem 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+        .btn-exit { border: 1px solid #EF4444; color: #EF4444; border-radius: 50px; padding: 6px 20px; font-weight: 600; text-decoration: none; transition: 0.3s; }
+        .btn-exit:hover { background: #EF4444; color: white; }
+        .streak-badge { background: #FFF7ED; color: #C2410C; border: 1px solid #FFEDD5; padding: 6px 14px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+
+        /* Left Setup Card */
+        .setup-card { background: var(--card-bg); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
+        .form-label { font-weight: 600; font-size: 0.9rem; }
+        .form-control, .form-select { border-radius: 10px; padding: 12px; background-color: #F8FAFC; border: 1px solid #CBD5E1; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        
+        .btn-start { background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 600; padding: 12px; width: 100%; transition: 0.3s; }
+        .btn-start:hover { background: #4338CA; }
+
+        .stats-box { background: #F8FAFC; padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-top: 20px; }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; font-weight: 500;}
+
+        /* Right Chat Area */
+        .chat-wrapper { background: var(--card-bg); border-radius: 15px; display: flex; flex-direction: column; height: calc(100vh - 120px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border-color); overflow: hidden; }
+        .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; }
+        .status-indicator { font-size: 0.85rem; color: #6B7280; }
+        .status-dot { color: #10B981; margin-right: 5px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: white; }
+        
+        .msg { max-width: 80%; padding: 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; }
+        .msg-bot { background: #F1F5F9; color: #1E293B; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-user { background: var(--primary-color); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg-feedback { background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; align-self: flex-start; width: 100%; border-radius: 10px; font-size: 0.9rem;}
+        
+        .chat-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); background: #F8FAFC; position: relative; }
+        .chat-input-container { display: flex; align-items: flex-end; background: white; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; position: relative; }
+        .chat-input { flex: 1; border: none; padding: 15px; padding-right: 50px; resize: none; outline: none; max-height: 120px; }
+        
+        .btn-send { background: #2563EB; color: white; border: none; padding: 15px 25px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; height: 100%; }
+        .btn-send:hover { background: #1D4ED8; }
+        
+        /* Mic Button */
+        .mic-btn { position: absolute; right: 100px; bottom: 12px; color: #6B7280; font-size: 1.4rem; background: none; border: none; transition: 0.3s; cursor: pointer; padding: 5px; }
+        .mic-btn:hover { color: #1F2937; }
+        .mic-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .mic-btn.recording { color: #EF4444; animation: micPulse 1.5s infinite; }
+        
+        @keyframes micPulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
+        .typing { display: none; align-self: flex-start; color: #6B7280; font-size: 0.85rem; font-style: italic; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-robot"></i> CareerWay Hub</a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="streak-badge d-none d-md-flex"><i class="fas fa-fire"></i> {{ stats.streak if stats is defined else 0 }} Day Streak</div>
+                <a href="{{ url_for('dashboard') }}" class="btn-exit">Exit Interview</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        <div class="row g-4">
+            
+            <div class="col-lg-4 col-xl-3">
+                <div class="setup-card">
+                    <h5 class="fw-bold mb-4"><i class="fas fa-sliders-h text-primary"></i> Interview Setup</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Target Role / Company</label>
+                        <select id="targetRole" class="form-select border-primary bg-white shadow-sm">
+                            <option value="{{ user.target_role if user.target_role else 'Python Developer' }}">
+                                👤 Profile Role: {{ user.target_role if user.target_role else 'Python Developer' }}
+                            </option>
+                            
+                            <optgroup label="🌟 Shortlisted (Prepare Now!)">
+                                {% for app in my_apps if app.status == 'Shortlisted' %}
+                                    <option value="{{ app.job.title }} at {{ app.job.company }}">
+                                        ✅ {{ app.job.title }} ({{ app.job.company }})
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+
+                            <optgroup label="📋 Other Applied Jobs">
+                                {% for app in my_apps if app.status != 'Shortlisted' %}
+                                    <option value="{{ app.job.title }} at {{ app.job.company }}">
+                                        ⏳ {{ app.job.title }} ({{ app.job.company }})
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Interview Type</label>
+                        <select id="interviewTopic" class="form-select">
+                            <option value="General HR (Behavioral)">General HR (Behavioral)</option>
+                            <option value="Technical Core Skills">Technical Core Skills</option>
+                            <option value="Problem Solving & Logic">Problem Solving & Logic</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-info border-0 bg-primary bg-opacity-10 text-primary small p-3 rounded-3 mb-4">
+                        <i class="fas fa-info-circle"></i> <strong>Tip:</strong> Click the Microphone icon to speak your answer in English or <em>Hinglish</em>!
+                    </div>
+
+                    <button class="btn-start" id="startBtn" onclick="startInterview()">
+                        Start Interview
+                    </button>
+                    
+                    <div class="stats-box mt-4">
+                        <h6 class="fw-bold mb-3" style="font-size: 0.9rem;">Session Stats</h6>
+                        <div class="stat-row"><span>Questions:</span> <span id="statQues" class="fw-bold">0</span></div>
+                        <div class="stat-row"><span>Avg Rating:</span> <span id="statRate" class="fw-bold text-primary">-</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-xl-9">
+                <div class="chat-wrapper">
+                    
+                    <div class="chat-header">
+                        <div class="status-indicator">
+                            <i class="fas fa-circle status-dot"></i> Status: <span class="text-success fw-bold">Live Session</span>
+                        </div>
+                        <button class="btn btn-sm btn-light border fw-bold text-muted"><i class="fas fa-video-slash"></i> Audio Only</button>
+                    </div>
+
+                    <div class="chat-body" id="chatHistory">
+                        <div class="msg msg-bot">
+                            Hello! I am your AI Interview Coach. Select a Job Application from the dropdown on the left and click <strong>Start Interview</strong> to practice.
+                        </div>
+                    </div>
+                    
+                    <div class="typing" id="typingIndicator">Coach is evaluating...</div>
+
+                    <div class="chat-footer">
+                        <div class="chat-input-container">
+                            <textarea id="userAnswer" class="chat-input" rows="2" placeholder="Type your answer here... (or click the mic to speak)" disabled></textarea>
+                            
+                            <button id="micBtn" class="mic-btn" onclick="toggleSpeech()" title="Click to speak" disabled>
+                                <i class="fas fa-microphone"></i>
+                            </button>
+
+                            <button id="submitBtn" class="btn-send" onclick="sendAnswer()" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="text-muted small mt-2" style="font-size: 0.75rem;"><i class="fas fa-keyboard"></i> Press <strong>Enter</strong> to send (Shift+Enter for new line)</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const chatHistory = document.getElementById('chatHistory');
+        const userAnswerInput = document.getElementById('userAnswer');
+        const submitBtn = document.getElementById('submitBtn');
+        const micBtn = document.getElementById('micBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const startBtn = document.getElementById('startBtn');
+        
+        let questionCount = 0;
+        let totalScore = 0;
+
+        // SPEECH TO TEXT LOGIC
+        let recognition;
+        let isRecording = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-IN';
+
+            recognition.onstart = function() {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                userAnswerInput.placeholder = "Listening... Speak now!";
+            };
+
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                
+                if (finalTranscript) userAnswerInput.value += finalTranscript + ' ';
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                stopSpeech();
+            };
+
+            recognition.onend = function() { stopSpeech(); };
+        } else {
+            micBtn.style.display = 'none';
+        }
+
+        function toggleSpeech() {
+            if (!recognition) return alert("Your browser doesn't support voice input. Please use Chrome.");
+            if (isRecording) recognition.stop();
+            else recognition.start();
+        }
+
+        function stopSpeech() {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            userAnswerInput.placeholder = "Type your answer here... (or click the mic to speak)";
+        }
+
+        function updateStats(rating) {
+            if(rating && rating !== "N/A" && !isNaN(rating)) {
+                questionCount++;
+                totalScore += parseInt(rating);
+                document.getElementById('statQues').innerText = questionCount;
+                document.getElementById('statRate').innerText = (totalScore / questionCount).toFixed(1) + "/10";
+            }
+        }
+
+        function appendMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `msg msg-${type}`;
+            
+            if(type === 'feedback') {
+                div.innerHTML = `<div class="fw-bold mb-1"><i class="fas fa-chart-line"></i> Evaluation</div>${text}`;
+            } else {
+                div.innerHTML = text;
+            }
+            
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function startInterview() {
+            const selectElement = document.getElementById('targetRole');
+            const role = selectElement.options[selectElement.selectedIndex].text;
+            const topic = document.getElementById('interviewTopic').value;
+
+            chatHistory.innerHTML = ''; 
+            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+            startBtn.disabled = true;
+            
+            callBackend(`Hello, I am ready to practice for: ${role}. Please ask me the very first interview question.`);
+        }
+
+        function sendAnswer() {
+            if (isRecording) stopSpeech();
+
+            const answer = userAnswerInput.value.trim();
+            if(!answer) return;
+
+            appendMessage(answer, 'user');
+            userAnswerInput.value = '';
+            
+            callBackend(answer);
+        }
+
+        function callBackend(answerText) {
+            const selectElement = document.getElementById('targetRole');
+            const role = selectElement.options[selectElement.selectedIndex].value;
+            const topic = document.getElementById('interviewTopic').value;
+
+            typingIndicator.style.display = 'block';
+            userAnswerInput.disabled = true;
+            submitBtn.disabled = true;
+            micBtn.disabled = true; 
+
+            fetch('/api/interview_bot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role: role, topic: topic, answer: answerText })
+            })
+            .then(response => {
+                if(!response.ok) throw new Error("Server error");
+                return response.json();
+            })
+            .then(data => {
+                typingIndicator.style.display = 'none';
+                userAnswerInput.disabled = false;
+                submitBtn.disabled = false;
+                micBtn.disabled = false;
+                userAnswerInput.focus();
+                
+                startBtn.innerHTML = 'Restart Interview';
+                startBtn.disabled = false;
+
+                if(!answerText.includes("Hello, I am ready to practice")) {
+                    let scoreHtml = data.rating !== "N/A" ? `<span class="badge bg-success mb-2">Score: ${data.rating}/10</span><br>` : '';
+                    appendMessage(`${scoreHtml}${data.feedback}`, 'feedback');
+                    updateStats(data.rating);
+                }
+
+                if(data.next_question) {
+                    setTimeout(() => appendMessage(data.next_question, 'bot'), 600);
+                }
+
+            })
+            .catch(err => {
+                typingIndicator.style.display = 'none';
+                userAnswerInput.disabled = false;
+                submitBtn.disabled = false;
+                micBtn.disabled = false;
+                startBtn.innerHTML = 'Start Interview';
+                startBtn.disabled = false;
+                
+                appendMessage("⚠️ Network error. The AI took too long to respond. Please try submitting again.", 'bot');
+            });
+        }
+
+        userAnswerInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendAnswer(); 
+            }
+        });
+    </script>
+</body>
+</html>

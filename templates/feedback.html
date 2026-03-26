@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide Feedback | CareerWay Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --accent-color: #10B981;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E2E8F0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --card-bg: #1F2937;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #374151;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: 0.3s;
+            padding-top: 80px;
+            padding-bottom: 60px;
+        }
+
+        /* Navbar */
+        .navbar { background-color: var(--card-bg) !important; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 0.8rem 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; font-size: 1.4rem; }
+
+        /* Form Card */
+        .form-wrapper { max-width: 600px; margin: 2rem auto; }
+        .form-card { background: var(--card-bg); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
+        
+        .header-icon { background: rgba(79, 70, 229, 0.1); color: var(--primary-color); width: 60px; height: 60px; border-radius: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; }
+
+        /* Inputs */
+        .form-label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin-bottom: 8px; }
+        .form-control, .form-select { background-color: var(--bg-color) !important; border: 1px solid var(--border-color) !important; padding: 12px 15px; border-radius: 10px; color: var(--text-main) !important; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-color) !important; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important; }
+
+        /* File Upload Styling */
+        .file-upload-wrapper { position: relative; width: 100%; }
+        .file-upload-label { 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 15px; border: 2px dashed var(--border-color); border-radius: 12px;
+            cursor: pointer; transition: 0.3s; color: var(--text-muted); font-weight: 500;
+        }
+        .file-upload-label:hover { border-color: var(--primary-color); color: var(--primary-color); background: rgba(79, 70, 229, 0.05); }
+        #fileInput { display: none; }
+
+        /* Interactive Star Rating */
+        .star-rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 5px; }
+        .star-rating input { display: none; }
+        .star-rating label { font-size: 2rem; color: #CBD5E1; cursor: pointer; transition: 0.2s; }
+        .star-rating label:hover, .star-rating label:hover ~ label, .star-rating input:checked ~ label { color: #F59E0B; }
+
+        .btn-submit { background: var(--primary-color); color: white; padding: 14px; border-radius: 50px; font-weight: 700; width: 100%; border: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); margin-top: 20px; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); }
+
+        /* Dark mode overrides */
+        [data-theme="dark"] .header-icon { background: rgba(79, 70, 229, 0.2); color: #C4B5FD; }
+        [data-theme="dark"] .star-rating label { color: #374151; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-arrow-left me-2"></i> CareerWay Hub</a>
+    </div>
+</nav>
+
+<div class="container form-wrapper">
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-success border-0 shadow-sm rounded-4 animate__animated animate__fadeInDown mb-4" role="alert">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-check-circle fs-4"></i>
+                <div>
+                    <strong>Thank you!</strong><br>
+                    <span class="small">Thank you for your valuable feedback from the CareerWay Team. We're on it!</span>
+                </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-card">
+        <div class="header-icon"><i class="fas fa-comment-dots"></i></div>
+        <h3 class="fw-bold mb-1 text-main">We value your feedback</h3>
+        <p class="text-muted mb-4 small">Help us improve the CareerWay Hub experience.</p>
+
+        <form action="{{ url_for('feedback') }}" method="POST" enctype="multipart/form-data">
+            
+            <div class="mb-4">
+                <label class="form-label">What kind of feedback is this? <span class="text-danger">*</span></label>
+                <select name="category" class="form-select" required>
+                    <option value="" disabled selected>Choose a category...</option>
+                    <option value="Bug">🐞 Report a Bug / Error</option>
+                    <option value="Feature">✨ Suggest a New Feature</option>
+                    <option value="UI/UX">🎨 UI / Design Feedback</option>
+                    <option value="General">💬 General Comment</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Rate your experience <span class="text-danger">*</span></label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" required />
+                    <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Tell us more <span class="text-danger">*</span></label>
+                <textarea name="message" class="form-control" rows="4" placeholder="What exactly happened? What would you like to see?" required></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Upload Screenshot (Optional)</label>
+                <div class="file-upload-wrapper">
+                    <label for="fileInput" class="file-upload-label" id="fileLabel">
+                        <i class="fas fa-cloud-upload-alt fs-4"></i>
+                        <span>Click to upload image or bug report</span>
+                    </label>
+                    <input type="file" name="screenshot" id="fileInput" accept="image/*" onchange="updateFileName()">
+                </div>
+                <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Help us see what's broken!</small>
+            </div>
+
+            <button type="submit" class="btn-submit">Submit Feedback <i class="fas fa-paper-plane ms-2"></i></button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    // Update the label when a file is selected
+    function updateFileName() {
+        const input = document.getElementById('fileInput');
+        const label = document.getElementById('fileLabel');
+        if (input.files.length > 0) {
+            label.innerHTML = `<i class="fas fa-file-image text-primary"></i> <span class="text-primary">${input.files[0].name}</span>`;
+            label.style.borderColor = "var(--primary-color)";
+        }
+    }
+
+    // Theme logic
+    document.addEventListener("DOMContentLoaded", function() {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    });
+</script>
+
+</body>
+</html>

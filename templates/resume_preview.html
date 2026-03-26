@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume | {{ data.full_name }}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ========================================= */
+        /* BASE PAGE SETTINGS                        */
+        /* ========================================= */
+        body {
+            background-color: #E2E8F0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+            -webkit-print-color-adjust: exact; /* Ensures colors print correctly */
+            print-color-adjust: exact;
+        }
+
+        .resume-paper {
+            background: white;
+            width: 100%;
+            max-width: 800px; /* Standard A4 Width */
+            min-height: 1050px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Print Settings */
+        @media print {
+            body { background: white; padding: 0; }
+            .resume-paper { box-shadow: none; border-radius: 0; max-width: 100%; min-height: auto; }
+            .print-btn-container { display: none !important; }
+            @page { margin: 0; size: A4; }
+        }
+
+        .print-btn-container { position: fixed; bottom: 30px; right: 30px; z-index: 100; }
+        .btn-print { background-color: #4F46E5; color: white; padding: 15px 25px; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); transition: 0.3s; }
+        .btn-print:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(79, 70, 229, 0.4); }
+
+        /* General link styling */
+        a { text-decoration: none; color: inherit; }
+
+        /* ========================================= */
+        /* TEMPLATE 1: ATS CLASSIC (Strict & Formal) */
+        /* ========================================= */
+        .ATS {
+            font-family: 'Merriweather', serif;
+            color: #000000;
+        }
+        .ATS .resume-header { text-align: center; padding: 50px 60px 20px 60px; border-bottom: 2px solid #000; margin-bottom: 20px; }
+        .ATS .name { font-size: 2.2rem; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: 1px; }
+        .ATS .target-role { font-size: 1.1rem; font-weight: 700; margin: 5px 0 15px 0; }
+        .ATS .contact-info { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; flex-wrap: wrap; }
+        
+        .ATS .body-wrapper { padding: 0 60px 50px 60px; }
+        .ATS .section-title { font-size: 1.1rem; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 3px; margin: 20px 0 10px 0; }
+        .ATS .section-content { font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+        .ATS .skills-text { font-weight: 700; }
+
+        /* ========================================= */
+        /* TEMPLATE 2: MODERN TECH (Blue Accents)    */
+        /* ========================================= */
+        .MODERN {
+            font-family: 'Roboto', sans-serif;
+            color: #1F2937;
+        }
+        .MODERN .resume-header { padding: 50px 60px 25px 60px; border-bottom: 4px solid #2563EB; margin-bottom: 25px; }
+        .MODERN .name { font-size: 2.6rem; font-weight: 700; color: #111827; margin: 0 0 5px 0; text-transform: uppercase; }
+        .MODERN .target-role { font-size: 1.2rem; font-weight: 700; color: #2563EB; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .MODERN .contact-info { display: flex; gap: 20px; font-size: 0.9rem; color: #4B5563; flex-wrap: wrap; font-weight: 600; }
+        .MODERN .contact-info i { color: #2563EB; margin-right: 5px; }
+        
+        .MODERN .body-wrapper { padding: 0 60px 50px 60px; }
+        .MODERN .section-title { font-size: 1.2rem; font-weight: 700; color: #2563EB; text-transform: uppercase; margin: 25px 0 15px 0; letter-spacing: 1px; }
+        .MODERN .section-content { font-size: 0.95rem; line-height: 1.6; color: #374151; white-space: pre-wrap; }
+        .MODERN .skills-text { font-weight: 700; color: #111827; }
+
+        /* ========================================= */
+        /* TEMPLATE 3: CREATIVE UI (Purple Header)   */
+        /* ========================================= */
+        .CREATIVE {
+            font-family: 'Poppins', sans-serif;
+            color: #374151;
+        }
+        .CREATIVE .resume-header { background-color: #4F46E5; color: white; padding: 50px 60px; }
+        .CREATIVE .name { font-size: 2.8rem; font-weight: 700; margin: 0; color: white; line-height: 1.1; }
+        .CREATIVE .target-role { font-size: 1.1rem; font-weight: 400; color: #E0E7FF; margin: 10px 0 20px 0; letter-spacing: 2px; text-transform: uppercase; }
+        .CREATIVE .contact-info { display: flex; gap: 20px; font-size: 0.9rem; color: #E0E7FF; flex-wrap: wrap; }
+        .CREATIVE .contact-info i { margin-right: 5px; opacity: 0.8; }
+        
+        .CREATIVE .body-wrapper { padding: 30px 60px 50px 60px; }
+        .CREATIVE .section-title { font-size: 1.2rem; font-weight: 700; color: #111827; border-left: 4px solid #4F46E5; padding-left: 12px; margin: 25px 0 15px 0; text-transform: uppercase; background: #F5F3FF; padding-top: 4px; padding-bottom: 4px;}
+        .CREATIVE .section-content { font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap; }
+        .CREATIVE .skills-text { font-weight: 600; color: #4F46E5; }
+    </style>
+</head>
+<body>
+
+    <div class="resume-paper {{ data.template_choice if data.template_choice else 'ATS' }}">
+        
+        <div class="resume-header">
+            <h1 class="name">{{ data.full_name }}</h1>
+            <p class="target-role">{{ data.target_role }}</p>
+            
+            <div class="contact-info">
+                <span><i class="fas fa-envelope"></i> {{ data.email }}</span>
+                <span><i class="fas fa-phone"></i> {{ data.phone }}</span>
+                
+                {% if data.linkedin %}
+                <span><i class="fab fa-linkedin"></i> <a href="{{ data.linkedin }}" target="_blank">LinkedIn</a></span>
+                {% endif %}
+                
+                {% if data.portfolio %}
+                <span><i class="fas fa-globe"></i> <a href="{{ data.portfolio }}" target="_blank">Portfolio</a></span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="body-wrapper">
+            
+            {% if data.summary %}
+            <div class="section-title">Professional Summary</div>
+            <div class="section-content">{{ data.summary }}</div>
+            {% endif %}
+
+            <div class="section-title">Core Competencies</div>
+            <div class="section-content skills-text">{{ data.skills }}</div>
+
+            <div class="section-title">Education</div>
+            <div class="section-content">{{ data.education }}</div>
+
+            {% if data.projects %}
+            <div class="section-title">Projects</div>
+            <div class="section-content">{{ data.projects }}</div>
+            {% endif %}
+
+            {% if data.experience %}
+            <div class="section-title">Professional Experience</div>
+            <div class="section-content">{{ data.experience }}</div>
+            {% endif %}
+
+            {% if data.certifications %}
+            <div class="section-title">Certifications & Awards</div>
+            <div class="section-content">{{ data.certifications }}</div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="print-btn-container">
+        <button class="btn-print" onclick="window.print()">
+            <i class="fas fa-download"></i> Save as PDF
+        </button>
+    </div>
+
+</body>
+</html>

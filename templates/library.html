@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library | CareerWay Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --accent: #f59e0b; /* Amber for Library theme */
+            --bg-body: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            padding-top: 80px;
+            color: #1e293b;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-link { color: #64748b; font-weight: 500; transition: 0.2s; }
+        .nav-link:hover { color: var(--primary); }
+        .nav-link.active { color: var(--primary); font-weight: 700; }
+
+        /* Search Section */
+        .search-container {
+            background: white; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            padding: 30px; margin-bottom: 40px;
+        }
+
+        /* Tabs */
+        .custom-tabs .nav-link {
+            border: none; color: #64748b; font-weight: 600;
+            padding: 10px 25px; border-radius: 50px;
+            transition: all 0.3s;
+        }
+        .custom-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Resource Card */
+        .resource-card {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s; overflow: hidden;
+            height: 100%; display: flex; flex-direction: column;
+        }
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+        }
+
+        .icon-box {
+            width: 50px; height: 50px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px;
+        }
+        .icon-pdf { background: #fee2e2; color: #ef4444; }
+        .icon-book { background: #e0e7ff; color: #4338ca; }
+
+        /* AI Tip Section */
+        .ai-tip-box {
+            background: #f0fdf4; border: 1px solid #dcfce7;
+            border-radius: 12px; padding: 12px; margin-top: 15px;
+            font-size: 0.85rem; color: #15803d;
+            position: relative;
+        }
+        .ai-tip-icon {
+            position: absolute; top: -10px; right: -5px;
+            background: white; border: 1px solid #dcfce7;
+            border-radius: 50%; width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
+            color: #15803d; font-size: 0.8rem;
+        }
+
+        /* Buttons */
+        .btn-upload {
+            background: var(--accent); color: white; border: none;
+            padding: 12px 25px; border-radius: 12px; font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-upload:hover { background: #d97706; transform: translateY(-2px); color: white; }
+
+        .btn-download {
+            background: #f1f5f9; color: #475569; border: none;
+            width: 100%; padding: 10px; border-radius: 10px;
+            font-weight: 600; margin-top: auto; transition: 0.2s;
+        }
+        .btn-download:hover { background: var(--primary); color: white; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-robot me-2"></i>CareerWay Hub</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Find Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Library</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('complete_profile') }}">Profile</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-bold">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+
+        <div class="d-flex justify-content-between align-items-end mb-4 animate__animated animate__fadeIn">
+            <div>
+                <h2 class="fw-bold mb-1">Resource Library 📚</h2>
+                <p class="text-muted">Smart resources curated by AI for your preparation.</p>
+            </div>
+            
+            <button class="btn-upload shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fas fa-cloud-upload-alt me-2"></i> Contribute Resource
+            </button>
+        </div>
+
+        <div class="search-container animate__animated animate__fadeInUp">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0 form-control-lg" placeholder="Search for PYQs, books, or topics (e.g., 'Python Interview Questions')...">
+            </div>
+        </div>
+
+        <ul class="nav nav-pills custom-tabs mb-4 justify-content-center" id="libraryTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="tab-pyqs" data-bs-toggle="pill" data-bs-target="#content-pyqs" type="button">
+                    <i class="fas fa-file-alt me-2"></i>Previous Year Qs
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-books" data-bs-toggle="pill" data-bs-target="#content-books" type="button">
+                    <i class="fas fa-book me-2"></i>Reference Books
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content animate__animated animate__fadeIn" id="libraryTabContent">
+            
+            <div class="tab-pane fade show active" id="content-pyqs">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="resource-card p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="icon-box icon-pdf"><i class="fas fa-file-pdf"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">SBI PO Mains 2024</h6>
+                                    <small class="text-muted">Solved Paper • Banking</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tip-box mb-4">
+                                <div class="ai-tip-icon"><i class="fas fa-robot"></i></div>
+                                <strong>AI Insight:</strong> This paper focuses heavily on Data Interpretation. Practice Q.30-45 specifically for time management.
+                            </div>
+
+                            <button class="btn-download"><i class="fas fa-download me-2"></i> Download PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="resource-card p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="icon-box icon-pdf"><i class="fas fa-file-pdf"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">TCS NQT 2025 Coding</h6>
+                                    <small class="text-muted">Coding Sheet • IT Sector</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tip-box mb-4">
+                                <div class="ai-tip-icon"><i class="fas fa-robot"></i></div>
+                                <strong>AI Insight:</strong> Covers dynamic programming patterns frequently asked by TCS. Review the 'String Manipulation' section.
+                            </div>
+
+                            <button class="btn-download"><i class="fas fa-download me-2"></i> Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="content-books">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="resource-card p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="icon-box icon-book"><i class="fas fa-book-reader"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Python Crash Course</h6>
+                                    <small class="text-muted">Eric Matthes • Programming</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tip-box mb-4">
+                                <div class="ai-tip-icon"><i class="fas fa-robot"></i></div>
+                                <strong>AI Insight:</strong> Best for rapid revision. Skip to Chapter 6 for Dictionaries if preparing for data-heavy interviews.
+                            </div>
+
+                            <button class="btn-download"><i class="fas fa-download me-2"></i> Download eBook</button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="resource-card p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="icon-box icon-book"><i class="fas fa-book-reader"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Quantitative Aptitude</h6>
+                                    <small class="text-muted">R.S. Aggarwal • General</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-tip-box mb-4">
+                                <div class="ai-tip-icon"><i class="fas fa-robot"></i></div>
+                                <strong>AI Insight:</strong> Essential for Govt exams. Focus on 'Profit & Loss' examples as they mirror recent exam trends.
+                            </div>
+
+                            <button class="btn-download"><i class="fas fa-download me-2"></i> Download eBook</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="uploadModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Upload Resource</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/upload_resource" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Title</label>
+                            <input type="text" class="form-control rounded-3" placeholder="e.g. UPSC Prelims 2024 Paper 1">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Category</label>
+                            <select class="form-select rounded-3">
+                                <option value="PYQ">Previous Year Question (PYQ)</option>
+                                <option value="Book">Book / Notes</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted">File (PDF)</label>
+                            <input type="file" class="form-control rounded-3">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-3 py-2 fw-bold">Upload to Library</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

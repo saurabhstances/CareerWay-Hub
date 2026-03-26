@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apply for {{ job.title if job is defined else 'Job' }} | CareerWay Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --accent-color: #10B981;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E2E8F0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --card-bg: #1F2937;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #374151;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+            padding-bottom: 70px;
+            padding-top: 80px; 
+            overflow-x: hidden;
+        }
+
+        /* --- 🔥 CRITICAL DARK MODE OVERRIDES 🔥 --- */
+        [data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
+        [data-theme="dark"] .text-dark { color: var(--text-main) !important; }
+        [data-theme="dark"] strong { color: var(--text-main); }
+        [data-theme="dark"] .bg-white { background-color: var(--card-bg) !important; }
+        [data-theme="dark"] .bg-light { background-color: rgba(255,255,255,0.05) !important; color: var(--text-main) !important;}
+        [data-theme="dark"] .job-summary { background-color: rgba(79, 70, 229, 0.1); border-color: rgba(79, 70, 229, 0.3); }
+
+        /* --- Navbar --- */
+        .navbar { background-color: var(--card-bg) !important; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 0.8rem 1.5rem; border-bottom: 1px solid var(--border-color); transition: 0.3s;}
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+        .nav-link { color: var(--text-muted) !important; font-weight: 500; transition: color 0.3s; }
+        .nav-link:hover { color: var(--primary-color) !important; }
+        .btn-logout { border: 1px solid #EF4444; color: #EF4444; border-radius: 20px; padding: 5px 20px; transition: all 0.3s; text-decoration: none; margin-left: 15px; display: inline-block; }
+        .btn-logout:hover { background: #EF4444; color: white; }
+        .streak-badge { background: #FFF7ED; color: #C2410C; border: 1px solid #FFEDD5; padding: 6px 14px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+        [data-theme="dark"] .streak-badge { background: rgba(249, 115, 22, 0.15); color: #FDBA74; border-color: rgba(249, 115, 22, 0.3); }
+
+        /* --- Application Form Layout --- */
+        .application-container { max-width: 850px; margin: 0 auto; }
+
+        .job-header-card {
+            background: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            margin-bottom: -30px; 
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .job-header-card h1 { font-weight: 700; font-size: clamp(1.5rem, 4vw, 2.2rem); margin-bottom: 10px; }
+        .job-meta { display: flex; gap: 15px; flex-wrap: wrap; opacity: 0.9; font-size: 0.9rem; }
+        .job-meta span { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 50px; }
+
+        .form-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: clamp(1.5rem, 5vw, 3rem);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 2;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .job-summary { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 12px; padding: 20px; margin-bottom: 30px; display: flex; gap: 15px; align-items: center; transition: 0.3s;}
+        .job-summary i { font-size: 2rem; color: var(--primary-color); }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-end;}
+        
+        /* 🔥 THEMED FORM CONTROLS 🔥 */
+        .form-control, .form-select {
+            background-color: var(--bg-color) !important;
+            border: 1px solid var(--border-color) !important;
+            padding: 14px 15px;
+            border-radius: 10px;
+            color: var(--text-main) !important;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
+            background-color: var(--card-bg) !important;
+        }
+        .form-control::placeholder { color: var(--text-muted); opacity: 0.7; }
+        .form-select option { background-color: var(--card-bg); color: var(--text-main); }
+
+        .file-upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            background: var(--bg-color);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .file-upload-box:hover { border-color: var(--primary-color); }
+        [data-theme="dark"] .file-upload-box:hover { background: rgba(79, 70, 229, 0.1); }
+
+        .btn-ai-letter { background: rgba(16, 185, 129, 0.1); color: var(--accent-color); border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.8rem; font-weight: 700; padding: 5px 15px; border-radius: 50px; transition: 0.2s; cursor: pointer;}
+        .btn-ai-letter:hover { background: var(--accent-color); color: white;}
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            margin-top: 30px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.4); color: white;}
+
+        /* Responsive Fixes */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg); padding: 1rem; border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: absolute;
+                top: 100%; left: 15px; right: 15px; z-index: 1000; border: 1px solid var(--border-color);
+            }
+            .navbar-nav .nav-link { padding: 10px 0; border-bottom: 1px solid var(--border-color); margin: 0; }
+            .btn-logout { margin: 15px 0 0 0; width: 100%; }
+        }
+        /* --- Floating Back Button Styling --- */
+.floating-back-btn {
+    position: fixed;
+    top: 90px; 
+    left: 20px;
+    z-index: 1050;
+    background: var(--card-bg);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.floating-back-btn:hover {
+    transform: translateX(5px);
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+}
+
+/* --- Logo Styling --- */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--primary-color) !important;
+    text-decoration: none;
+    font-size: 1.3rem;
+}
+    </style>
+</head>
+<body>
+
+    <a href="{{ url_for('dashboard') }}" class="floating-back-btn">
+    <i class="fa-solid fa-chevron-left"></i> Dashboard
+</a>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="nav-logo" href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-robot"></i> CareerWay Hub
+        </a>
+        
+        <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary rounded-circle d-lg-none me-2" onclick="toggleTheme()" style="width: 35px; height: 35px;"><i class="fas fa-moon"></i></button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item d-none d-lg-block"><button class="btn btn-sm btn-outline-secondary rounded-circle me-3" onclick="toggleTheme()" style="width: 35px; height: 35px;"><i class="fas fa-moon"></i></button></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('resume_builder') }}">Resume Builder</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('library') }}">Library</a></li>
+                <li class="nav-item"><a class="btn-logout" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container-fluid px-3 px-md-4 mt-4 application-container">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="job-header-card">
+            <h1>{{ job.title if job is defined else 'Software Developer' }}</h1>
+            <div class="job-meta">
+                <span><i class="fas fa-building"></i> {{ job.company if job is defined else 'Company Name' }}</span>
+                <span><i class="fas fa-map-marker-alt"></i> {{ job.location if job is defined else 'Remote / Office' }}</span>
+                <span><i class="fas fa-money-bill-wave"></i> {{ job.salary if job is defined else 'Not Disclosed' }}</span>
+            </div>
+        </div>
+
+        <div class="form-card">
+            
+            <div class="job-summary">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 1.05rem;">Applying to {{ job.company if job is defined else 'Company' }}</h6>
+                    <div class="text-muted small">Your application goes directly to the recruiter's dashboard.</div>
+                </div>
+            </div>
+
+            <form action="{{ url_for('apply_process', job_id=job.id) if job is defined else '#' }}" method="POST" enctype="multipart/form-data">
+                
+                <p class="text-muted small mb-4">You are applying as <strong class="text-dark">{{ user.name if user is defined else 'Student' }}</strong> ({{ user.email if user is defined else 'user@email.com' }}). Review the questions below carefully.</p>
+
+                <h4 class="section-title"><i class="fas fa-tools"></i> 1. Skills & Proficiency</h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Top Skills relevant to this role <span class="text-danger">*</span></label>
+                        <input type="text" name="skills" class="form-control" placeholder="e.g., Python, React, SQL..." value="{{ user.skills if user is defined else '' }}" required>
+                        <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Comma separated</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Overall Proficiency Level <span class="text-danger">*</span></label>
+                        <select name="proficiency" class="form-select" required>
+                            <option value="" disabled selected>Select your level...</option>
+                            <option value="Beginner">Beginner (0-1 years)</option>
+                            <option value="Intermediate">Intermediate (1-3 years)</option>
+                            <option value="Advanced">Advanced (3-5 years)</option>
+                            <option value="Expert">Expert (5+ years)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 class="section-title"><i class="fas fa-question-circle"></i> 2. Screening Questions</h4>
+                
+                <div class="mb-4">
+                    <label class="form-label">1. Why are you interested in this specific role? <span class="text-danger">*</span></label>
+                    <textarea name="question_1" class="form-control" rows="2" placeholder="Briefly explain why your background makes you a good fit..." required></textarea>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">2. Can you join immediately? <span class="text-danger">*</span></label>
+                        <select name="question_2" class="form-select" required>
+                            <option value="Yes">Yes, Immediate Joiner</option>
+                            <option value="15 Days">Within 15 Days</option>
+                            <option value="30 Days">Within 30 Days</option>
+                            <option value="More than 30 Days">More than 30 Days</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">3. Are you willing to relocate? <span class="text-danger">*</span></label>
+                        <select name="question_3" class="form-select" required>
+                            <option value="Yes">Yes, completely open to relocate</option>
+                            <option value="No">No, I prefer remote or current city</option>
+                            <option value="Maybe">Depends on the package</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">4. Expected Salary/CTC? <span class="text-danger">*</span></label>
+                        <input type="text" name="question_4" class="form-control" placeholder="e.g., 5 LPA, 8 LPA, Negotiable" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">5. Portfolio or GitHub Link</label>
+                        <input type="url" name="question_5" class="form-control" placeholder="https://github.com/yourprofile">
+                    </div>
+                </div>
+
+                <h4 class="section-title mt-5">
+                    <span><i class="fas fa-align-left"></i> 3. Professional Cover Letter</span>
+                </h4>
+                <div class="mb-4">
+                    <label class="form-label w-100 mb-2">
+                        Introduce yourself to the recruiter
+                        <button type="button" class="btn-ai-letter float-end" id="aiBtn" onclick="generateCoverLetter()">
+                            <i class="fas fa-magic me-1"></i> AI Auto-Write
+                        </button>
+                    </label>
+                    <textarea name="cover_letter" id="coverLetterBox" class="form-control" rows="6" placeholder="Introduce yourself and explain why you're a great fit for this role..."></textarea>
+                    <small class="text-muted mt-2 d-block"><i class="fas fa-sparkles text-warning"></i> Click the <strong>AI Auto-Write</strong> button to instantly generate a tailored cover letter!</small>
+                </div>
+
+                <h4 class="section-title mt-5"><i class="fas fa-file-pdf"></i> 4. Resume / CV Upload</h4>
+                <div class="file-upload-box" onclick="document.getElementById('resumeInput').click()">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+                    <h6 class="fw-bold mb-1 text-dark">Click to upload your latest Resume</h6>
+                    <p class="text-muted small mb-0">PDF or DOCX (Max 5MB). <strong>Optional</strong> if you have already uploaded it in your profile.</p>
+                    <input type="file" name="resume" id="resumeInput" style="display: none;" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+                    <div id="fileNameDisplay" class="mt-3 text-success fw-bold" style="display:none;"></div>
+                </div>
+                
+                {% if user is defined and user.resume_filename %}
+                <div class="alert bg-light mt-3 small border-0 d-flex align-items-center gap-2">
+                    <i class="fas fa-check-circle text-success fs-5"></i> 
+                    <span class="text-muted">We found <strong class="text-dark">{{ user.resume_filename }}</strong> on your profile. It will be attached automatically.</span>
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn-submit">
+                    Submit Application <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File Name Display Logic
+        function showFileName(input) {
+            const display = document.getElementById('fileNameDisplay');
+            if (input.files && input.files.length > 0) {
+                display.style.display = 'block';
+                display.innerHTML = `<i class="fas fa-file-pdf"></i> Attached: ${input.files[0].name}`;
+            } else {
+                display.style.display = 'none';
+            }
+        }
+
+        // Theme Toggle Logic
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                document.querySelectorAll('.fa-moon').forEach(el => el.classList.replace('fa-sun', 'fa-moon'));
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                document.querySelectorAll('.fa-moon').forEach(el => el.classList.replace('fa-moon', 'fa-sun'));
+            }
+        }
+
+        // 🔥 AI Cover Letter Script 🔥
+        function generateCoverLetter() {
+            const textarea = document.getElementById('coverLetterBox');
+            const btn = document.getElementById('aiBtn');
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Writing...';
+            btn.disabled = true;
+            textarea.value = "AI is analyzing your profile and the job requirements...\n\nCrafting a professional cover letter...";
+
+            // Call the backend API
+            fetch('/api/write_cover_letter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ job_id: {{ job.id if job is defined else 0 }} })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    textarea.value = "Oops! AI is busy. Please type manually.";
+                } else {
+                    textarea.value = data.letter; // Inject the AI generated text
+                }
+                btn.innerHTML = '<i class="fas fa-magic"></i> AI Auto-Write';
+                btn.disabled = false;
+            })
+            .catch(err => {
+                textarea.value = "Connection failed. Please type manually.";
+                btn.innerHTML = '<i class="fas fa-magic"></i> AI Auto-Write';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

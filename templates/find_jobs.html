@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs | CareerWay Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --bg-body: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding-top: 80px;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.02);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-link { color: #64748b; font-weight: 500; transition: 0.2s; }
+        .nav-link:hover { color: var(--primary); }
+        .nav-link.active { color: var(--primary); font-weight: 700; }
+
+        /* --- FILTERS SIDEBAR --- */
+        .filter-card {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            padding: 25px; position: sticky; top: 100px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        
+        .filter-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .filter-group { margin-bottom: 25px; }
+        .filter-label { font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 10px; display: block; }
+        
+        .form-control, .form-select {
+            border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 15px; font-size: 0.9rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Custom Checkboxes */
+        .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+        .form-check-label { font-size: 0.9rem; color: #475569; cursor: pointer; }
+
+        /* Radius Slider */
+        .range-value { font-size: 0.85rem; color: var(--primary); font-weight: 600; float: right; }
+        input[type=range] { accent-color: var(--primary); height: 6px; }
+
+        /* --- JOB CARDS --- */
+        .job-card {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            padding: 25px; margin-bottom: 20px; transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .job-card:hover {
+            transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--primary);
+        }
+
+        .job-logo {
+            width: 50px; height: 50px; border-radius: 10px; background: #eff6ff;
+            color: var(--primary); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px;
+        }
+
+        .job-title { font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 5px; }
+        .company-name { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+
+        .tag-container { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
+        .job-tag {
+            font-size: 0.75rem; padding: 5px 12px; border-radius: 50px; font-weight: 600;
+            background: #f1f5f9; color: #475569;
+        }
+        .tag-part-time { background: #fff7ed; color: #c2410c; }
+        .tag-full-time { background: #eff6ff; color: #1d4ed8; }
+
+        .btn-apply {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; padding: 10px; border-radius: 10px;
+            font-weight: 600; width: 100%; margin-top: auto; transition: 0.2s;
+        }
+        .btn-apply:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* Floating Bot */
+        #botg-icon {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            cursor: grab; z-index: 1050; border: 3px solid white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-robot me-2"></i>CareerWay Hub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Find Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('prep_vault') }}">Prep Vault</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('complete_profile') }}">Profile</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-bold">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            
+            <div class="col-lg-3 mb-4">
+                <div class="filter-card animate__animated animate__fadeInLeft">
+                    <div class="filter-title">
+                        Filters <a href="#" class="text-decoration-none small text-primary" style="font-size: 0.8rem;">Reset</a>
+                    </div>
+                    
+                    <form action="#" method="GET">
+                        
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-map-marker-alt me-2 text-muted"></i>Location</label>
+                            <input type="text" class="form-control" placeholder="e.g. Mumbai, Pune">
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="fas fa-bullseye me-2 text-muted"></i>Radius
+                                <span class="range-value" id="radiusVal">10 km</span>
+                            </label>
+                            <input type="range" class="form-range" min="1" max="50" value="10" id="radiusRange" oninput="document.getElementById('radiusVal').innerText = this.value + ' km'">
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span>1km</span>
+                                <span>50km</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-briefcase me-2 text-muted"></i>Job Type</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="checkFull" checked>
+                                <label class="form-check-label" for="checkFull">Full Time</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="checkPart">
+                                <label class="form-check-label" for="checkPart">Part Time</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkIntern">
+                                <label class="form-check-label" for="checkIntern">Internship</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-graduation-cap me-2 text-muted"></i>Qualification</label>
+                            <select class="form-select">
+                                <option value="">Any Qualification</option>
+                                <option value="10th">10th Pass</option>
+                                <option value="12th">12th Pass</option>
+                                <option value="Graduate">Graduate (BSc/BTech)</option>
+                                <option value="PostGrad">Post Graduate</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary w-100 rounded-3 fw-bold mt-2">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-9 animate__animated animate__fadeInUp">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">34 Jobs Found</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-white border dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+                            Sort by: Relevance
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Date Posted</a></li>
+                            <li><a class="dropdown-item" href="#">Salary High to Low</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="job-card">
+                    <div class="d-flex align-items-start">
+                        <div class="job-logo"><i class="fab fa-python"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="job-title">Junior Python Developer</h5>
+                                    <div class="company-name">TechCorp Solutions • Mumbai (Andheri)</div>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="fw-bold text-dark mb-0">₹ 3.5 - 5 LPA</h6>
+                                    <small class="text-muted">2 days ago</small>
+                                </div>
+                            </div>
+                            
+                            <div class="tag-container">
+                                <span class="job-tag tag-full-time">Full Time</span>
+                                <span class="job-tag"><i class="fas fa-graduation-cap me-1"></i> Graduate</span>
+                                <span class="job-tag"><i class="fas fa-map-marker-alt me-1"></i> 5km away</span>
+                            </div>
+                            
+                            <div class="d-flex align-items-center mt-2">
+                                <p class="small text-muted mb-0 me-3 line-clamp-2">
+                                    Looking for a fresher with strong Python basics. Knowledge of Flask/Django is a plus.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-apply mt-3">Apply Now <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+
+                <div class="job-card">
+                    <div class="d-flex align-items-start">
+                        <div class="job-logo text-warning bg-warning bg-opacity-10"><i class="fas fa-cash-register"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="job-title">Retail Store Executive</h5>
+                                    <div class="company-name">Reliance Retail • Mumbai (Bandra)</div>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="fw-bold text-dark mb-0">₹ 15,000 /mo</h6>
+                                    <small class="text-muted">Today</small>
+                                </div>
+                            </div>
+                            
+                            <div class="tag-container">
+                                <span class="job-tag tag-part-time">Part Time</span>
+                                <span class="job-tag"><i class="fas fa-graduation-cap me-1"></i> 12th Pass</span>
+                                <span class="job-tag"><i class="fas fa-map-marker-alt me-1"></i> 2km away</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mt-2">
+                                <p class="small text-muted mb-0 me-3">
+                                    Manage billing counter and customer queries. Flexible evening shifts available.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-apply mt-3">Apply Now <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+
+                <div class="job-card">
+                    <div class="d-flex align-items-start">
+                        <div class="job-logo text-info bg-info bg-opacity-10"><i class="fas fa-headset"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="job-title">Customer Support Intern</h5>
+                                    <div class="company-name">DialNow Services • Remote</div>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="fw-bold text-dark mb-0">₹ 8,000 /mo</h6>
+                                    <small class="text-muted">1 week ago</small>
+                                </div>
+                            </div>
+
+                            <div class="search-hero mb-5 animate__animated animate__fadeIn">
+    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+        <span class="input-group-text bg-white border-0 ps-4"><i class="fas fa-search text-primary"></i></span>
+        <input type="text" class="form-control border-0" placeholder="Ask AI: 'Find Python jobs in Mumbai with 5LPA salary...'">
+        <button class="btn bg-white border-0 text-muted" title="Voice Search"><i class="fas fa-microphone"></i></button>
+        <button class="btn btn-primary px-5 fw-bold">Search</button>
+    </div>
+</div>
+
+<div class="filter-card mt-4 bg-primary text-white border-0">
+    <div class="d-flex align-items-center mb-2">
+        <i class="fas fa-bell fa-lg me-2"></i>
+        <h6 class="fw-bold mb-0">Get Job Alerts</h6>
+    </div>
+    <p class="small opacity-75 mb-3">Get notified when new jobs match your profile.</p>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="alertSwitch">
+        <label class="form-check-label small fw-bold" for="alertSwitch">Enable Notifications</label>
+    </div>
+</div>
+
+<div class="job-card">
+    <div class="d-flex align-items-start">
+        <div class="job-logo"><i class="fab fa-python"></i></div>
+        <div class="flex-grow-1">
+            <div class="d-flex justify-content-between">
+                <h5 class="job-title">Junior Python Developer</h5>
+                <i class="far fa-heart text-muted fs-5" style="cursor: pointer;" onclick="this.classList.toggle('fas'); this.classList.toggle('text-danger');"></i>
+            </div>
+            </div>
+    </div>
+</div>
+                            
+                            <div class="tag-container">
+                                <span class="job-tag bg-light border">Internship</span>
+                                <span class="job-tag"><i class="fas fa-graduation-cap me-1"></i> Any</span>
+                                <span class="job-tag"><i class="fas fa-laptop-house me-1"></i> Remote</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-apply mt-3">Apply Now <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="botg-icon" title="Ask BotG">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple Drag Logic for Bot
+        const bot = document.getElementById('botg-icon');
+        let isDragging = false;
+        bot.addEventListener('mousedown', (e) => {
+            let shiftX = e.clientX - bot.getBoundingClientRect().left;
+            let shiftY = e.clientY - bot.getBoundingClientRect().top;
+            function moveAt(pageX, pageY) {
+                bot.style.left = pageX - shiftX + 'px';
+                bot.style.top = pageY - shiftY + 'px';
+                bot.style.bottom = 'auto'; bot.style.right = 'auto';
+            }
+            function onMouseMove(event) { moveAt(event.pageX, event.pageY); }
+            document.addEventListener('mousemove', onMouseMove);
+            bot.onmouseup = function() {
+                document.removeEventListener('mousemove', onMouseMove);
+                bot.onmouseup = null;
+            };
+        });
+        bot.ondragstart = function() { return false; };
+    </script>
+</body>
+</html>

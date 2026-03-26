@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AI Job Matcher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #F0F4F8; font-family: 'Segoe UI', sans-serif; }
+        .loading-container { text-align: center; padding: 50px; }
+        .spinner-border { width: 3rem; height: 3rem; color: #4F46E5; }
+        
+        /* Card Styles */
+        .match-card {
+            border: none;
+            border-radius: 15px;
+            background: white;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .match-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .score-box { background: #e0f2fe; color: #0284c7; padding: 10px 20px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; }
+        .roadmap-item { background: #f0fdf4; padding: 10px; margin-bottom: 5px; border-radius: 8px; color: #166534; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-white shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/dashboard">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <span class="navbar-text fw-bold">AI Career Coach for {{ user.name }}</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="loading-section" class="loading-container">
+            <div class="spinner-border mb-3" role="status"></div>
+            <h4 class="fw-bold text-muted">Analyzing your profile against active jobs...</h4>
+            <p>Please wait while Gemini AI finds your best match.</p>
+        </div>
+
+        <div id="results-section" style="display: none;">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">🎯 Your Top Matches</h2>
+            </div>
+            <div id="matches-container"></div>
+        </div>
+        
+        <div id="error-section" class="text-center py-5" style="display: none;">
+            <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-3"></i>
+            <h4>No Matches Found</h4>
+            <p>Try updating your profile skills or adding more jobs to the database.</p>
+            <a href="/complete_profile" class="btn btn-outline-primary">Update Profile</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Call the Python API immediately
+            fetch('/api/perform_match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const loader = document.getElementById('loading-section');
+                const results = document.getElementById('results-section');
+                const container = document.getElementById('matches-container');
+                const errorDiv = document.getElementById('error-section');
+
+                loader.style.display = 'none';
+
+                if (!data.matches || data.matches.length === 0) {
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                results.style.display = 'block';
+
+                // Render Cards dynamically
+                data.matches.forEach(match => {
+                    let roadmapHtml = match.roadmap.map(step => 
+                        `<div class="roadmap-item"><i class="fa-regular fa-square-check"></i> ${step}</div>`
+                    ).join('');
+
+                    let card = `
+                        <div class="match-card">
+                            <div class="match-header">
+                                <div>
+                                    <h4 class="fw-bold mb-1">${match.title}</h4>
+                                    <p class="mb-0 text-muted">${match.company} • ${match.location}</p>
+                                </div>
+                                <div class="score-box">${match.score}% Match</div>
+                            </div>
+                            <div class="p-4">
+                                <h6 class="fw-bold text-primary">Why this fits:</h6>
+                                <p class="text-muted">${match.reason}</p>
+                                <h6 class="fw-bold mt-3">Preparation Roadmap:</h6>
+                                ${roadmapHtml}
+                                <div class="mt-4 text-end">
+                                    <a href="${match.link}" class="btn btn-primary px-4">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(err => {
+                document.getElementById('loading-section').style.display = 'none';
+                document.getElementById('error-section').style.display = 'block';
+                console.error("Error:", err);
+            });
+        });
+    </script>
+</body>
+</html>

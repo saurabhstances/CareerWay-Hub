@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates | CareerWay Recruiter</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --primary: #4F46E5; 
+            --bg: #F8FAFC; 
+            --card: #FFFFFF; 
+            --text-main: #1F2937; 
+            --text-muted: #6B7280;
+            --border: #E2E8F0; 
+        }
+        
+        body { background: var(--bg); color: var(--text-main); font-family: 'Poppins', sans-serif; padding-top: 80px; padding-bottom: 50px; }
+        
+        /* --- Navbar --- */
+        .navbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .brand-logo { font-weight: 700; font-size: 1.4rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .btn-logout { border: 1px solid #EF4444; color: #EF4444; border-radius: 50px; padding: 6px 20px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .btn-logout:hover { background: #EF4444; color: white; }
+
+        /* --- Header Card --- */
+        .header-card { background: var(--card); border-radius: 15px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+        .job-meta { font-size: 0.95rem; color: var(--text-muted); margin-top: 5px; font-weight: 500; }
+        
+        /* 🔥 AI Button */
+        .ai-btn { background: linear-gradient(135deg, #8B5CF6 0%, #4F46E5 100%); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); display: flex; align-items: center; gap: 8px;}
+        .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6); color: white; }
+
+        /* --- Candidate Cards --- */
+        .candidate-card { background: var(--card); border-radius: 15px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1rem; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .candidate-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1); border-color: var(--primary); }
+        
+        .score-badge { width: 55px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .score-high { background: linear-gradient(135deg, #10B981 0%, #059669 100%); } 
+        .score-med { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }  
+        .score-low { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); }  
+        
+        .skill-pill { background: #EEF2FF; color: var(--primary); border: 1px solid #E0E7FF; padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; margin-right: 6px; display: inline-block; margin-bottom: 6px; }
+        
+        .btn-action { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; transition: 0.2s; text-decoration: none; font-size: 1.1rem;}
+        .btn-accept { background: #ECFDF5; color: #10B981; border: 1px solid #D1FAE5;}
+        .btn-accept:hover { background: #10B981; color: white; }
+        .btn-reject { background: #FEF2F2; color: #EF4444; border: 1px solid #FEE2E2;}
+        .btn-reject:hover { background: #EF4444; color: white; }
+        
+        .status-badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 8px 16px; border-radius: 50px; letter-spacing: 0.5px;}
+        .st-Applied { background: #EFF6FF; color: #3B82F6; border: 1px solid #DBEAFE;}
+        .st-Shortlisted { background: #ECFDF5; color: #10B981; border: 1px solid #D1FAE5;}
+        .st-Rejected { background: #FEF2F2; color: #EF4444; border: 1px solid #FEE2E2;}
+        
+        .link-text { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: 0.2s; background: #F8FAFC; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);}
+        .link-text:hover { color: var(--primary); border-color: var(--primary); background: white;}
+        
+        /* AI Modal Styles */
+        .ai-rank-card { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .ai-score { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <a href="{{ url_for('recruiter_dashboard') }}" class="brand-logo"><i class="fas fa-robot"></i> CareerWay Recruiter</a>
+        <div class="d-flex align-items-center gap-4">
+            <span class="text-muted small fw-bold d-none d-sm-block">Hello, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    
+    <a href="{{ url_for('recruiter_dashboard') }}" class="text-decoration-none text-muted fw-bold mb-3 d-inline-block" style="transition: 0.2s;">
+        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+    </a>
+
+    <div class="header-card">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: var(--primary);">{{ job.title }}</h3>
+            <div class="job-meta">
+                <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ job.location }} 
+                <span class="mx-2 opacity-50">|</span> 
+                <i class="fas fa-users text-primary me-1"></i> {{ applicants|length }} Candidates
+            </div>
+        </div>
+        
+        <button class="ai-btn" onclick="runAIRanking()">
+            <i class="fas fa-sparkles"></i> AI Auto-Rank
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if applicants %}
+                {% for item in applicants %}
+                <div class="candidate-card">
+                    <div class="row align-items-center">
+                        
+                        <div class="col-auto text-center pe-3">
+                            <div class="score-badge {% if item.score > 75 %}score-high{% elif item.score > 40 %}score-med{% else %}score-low{% endif %}">
+                                {{ item.score }}%
+                            </div>
+                            <small class="d-block mt-2 fw-bold text-muted" style="font-size: 0.65rem; letter-spacing: 1px;">MATCH</small>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h5 class="fw-bold mb-1">{{ item.student.name }}</h5>
+                            <div class="small text-muted mb-1"><i class="fas fa-envelope text-secondary me-2"></i> {{ item.student.email }}</div>
+                            <div class="small text-muted"><i class="fas fa-phone text-secondary me-2"></i> {{ item.student.mobile }}</div>
+                        </div>
+
+                        <div class="col-md-4 py-3 py-md-0 border-start border-end px-md-4">
+                            <div class="mb-2">
+                                {% if item.student.skills %}
+                                    {% set skill_list = item.student.skills.split(',') %}
+                                    {% for skill in skill_list[:4] %}
+                                        <span class="skill-pill">{{ skill.strip() }}</span>
+                                    {% endfor %}
+                                    {% if skill_list|length > 4 %}
+                                        <span class="skill-pill bg-light text-muted border-0">+{{ skill_list|length - 4 }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted small fst-italic">No skills listed in profile</span>
+                                {% endif %}
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="fas fa-briefcase text-secondary me-1"></i> Exp: <span class="fw-bold text-dark">{{ item.student.experience if item.student.experience else 'Not Specified' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 text-end d-flex justify-content-md-end align-items-center gap-3 mt-3 mt-md-0">
+                            <div class="d-flex flex-column align-items-end gap-2">
+                                {% if item.student.resume_filename %}
+                                    <a href="{{ url_for('download_file', filename=item.student.resume_filename) }}" class="link-text" target="_blank">
+                                        <i class="fas fa-file-pdf text-danger me-1"></i> Resume
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small fw-bold px-2"><i class="fas fa-times-circle text-danger"></i> No Resume</span>
+                                {% endif %}
+                                
+                                {% if item.app.cover_letter %}
+                                    <a href="#" class="link-text" data-bs-toggle="modal" data-bs-target="#coverModal{{ item.app.id }}">
+                                        <i class="fas fa-align-left text-primary me-1"></i> Cover Letter
+                                    </a>
+                                {% endif %}
+                            </div>
+
+                            <div class="vr mx-2 text-muted opacity-25" style="height: 40px;"></div>
+
+                            {% if item.app.status == 'Applied' %}
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('update_status', app_id=item.app.id, status='Shortlisted') }}" class="btn-action btn-accept shadow-sm" title="Shortlist">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a href="{{ url_for('update_status', app_id=item.app.id, status='Rejected') }}" class="btn-action btn-reject shadow-sm" title="Reject">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <span class="status-badge st-{{ item.app.status }}">
+                                    {% if item.app.status == 'Shortlisted' %}<i class="fas fa-check-circle me-1"></i>{% endif %}
+                                    {% if item.app.status == 'Rejected' %}<i class="fas fa-times-circle me-1"></i>{% endif %}
+                                    {{ item.app.status }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal fade" id="coverModal{{ item.app.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                            <div class="modal-header border-bottom-0 bg-light rounded-top-4">
+                                <h6 class="modal-title fw-bold text-primary"><i class="fas fa-file-alt me-2"></i> Cover Letter: {{ item.student.name }}</h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-4 text-muted" style="white-space: pre-wrap; font-family: 'Georgia', serif; font-size: 0.95rem; line-height: 1.8;">{{ item.app.cover_letter }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 bg-white rounded-4 border shadow-sm mt-3">
+                    <div class="mb-3 opacity-25"><i class="fas fa-folder-open fa-4x text-primary"></i></div>
+                    <h4 class="fw-bold text-dark">No candidates yet</h4>
+                    <p class="text-muted">Applications will appear here once candidates apply.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="aiModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white border-0 p-4">
+                <h5 class="modal-title fw-bold"><i class="fas fa-robot text-warning me-2"></i> AI Candidate Analysis</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <div id="aiLoading" class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3.5rem; height: 3.5rem;"></div>
+                    <h4 class="fw-bold text-primary">Gemini is analyzing resumes...</h4>
+                    <p class="text-muted">Comparing candidate skills, experience, and formatting to the job requirements.</p>
+                </div>
+                
+                <div id="aiResults" style="display: none;">
+                    <h5 class="fw-bold mb-4 text-success border-bottom pb-2"><i class="fas fa-check-circle me-2"></i> Top Recommended Candidates</h5>
+                    <div id="rankingsContainer"></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light p-3 justify-content-center">
+                <button class="btn btn-primary px-5 py-2 rounded-pill fw-bold" data-bs-dismiss="modal">Close & Review Manually</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function runAIRanking() {
+        const modalEl = document.getElementById('aiModal');
+        const modal = new bootstrap.Modal(modalEl);
+        
+        document.getElementById('aiLoading').style.display = 'block';
+        document.getElementById('aiResults').style.display = 'none';
+        document.getElementById('rankingsContainer').innerHTML = '';
+        
+        modal.show();
+
+        // Call the Backend API
+        fetch('/api/rank_applicants/{{ job.id }}', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('aiLoading').style.display = 'none';
+            document.getElementById('aiResults').style.display = 'block';
+            
+            const container = document.getElementById('rankingsContainer');
+            
+            if(data.error) {
+                container.innerHTML = `<div class="alert alert-danger fw-bold text-center border-0"><i class="fas fa-exclamation-triangle me-2"></i> ${data.error}</div>`;
+                return;
+            }
+
+            let html = '';
+            data.rankings.forEach((cand, index) => {
+                let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                html += `
+                <div class="ai-rank-card d-flex align-items-center gap-4">
+                    <div style="font-size: 2.5rem; text-shadow: 0 4px 6px rgba(0,0,0,0.1);">${medal}</div>
+                    <div style="flex: 1;">
+                        <h5 class="fw-bold mb-1 text-dark">${cand.name}</h5>
+                        <p class="mb-0 text-muted" style="font-size: 0.9rem; line-height: 1.5;"><strong>AI Notes:</strong> ${cand.reason}</p>
+                    </div>
+                    <div class="text-end border-start ps-4">
+                        <div class="ai-score">${cand.score}<span style="font-size: 1rem; color: #6B7280;">/100</span></div>
+                        <div class="small fw-bold text-success text-uppercase" style="letter-spacing: 1px;">Match</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('aiLoading').style.display = 'none';
+            document.getElementById('aiResults').style.display = 'block';
+            document.getElementById('rankingsContainer').innerHTML = '<div class="alert alert-danger text-center fw-bold border-0"><i class="fas fa-wifi me-2"></i> Connection failed. Please try again.</div>';
+        });
+    }
+</script>
+</body>
+</html>
