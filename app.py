@@ -51,6 +51,8 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 db = SQLAlchemy(app)
+with app.app_context():
+    db.create_all()
 
 # ===========================
 #        DATABASE MODELS
