@@ -1,7 +1,12 @@
 Flask
+Flask-SQLAlchemy
+Flask-Mail
+Flask-Login
 google-generativeai
 gunicorn
 requests
+beautifulsoup4
+schedule
+thefuzz
+pypdf
 python-dotenv
-Flask-SQLAlchemy
-Flask-Login
