@@ -308,9 +308,16 @@ def complete_profile():
 @app.route('/job/<int:job_id>')
 def view_job(job_id):
     if 'user_id' not in session: return redirect(url_for('login'))
-    job = Job.query.get_or_404(job_id)
-    has_applied = Application.query.filter_by(job_id=job.id, student_id=session['user_id']).first() is not None
-    # FIX: Corrected Template Case Sensitivity
+    
+    # Use .get() instead of .get_or_404() temporarily to see if it's a data issue
+    job = Job.query.get(job_id)
+    
+    if job is None:
+        return "Job not found in database. Please run the scraper first!", 404
+        
+    user = User.query.get(session['user_id'])
+    has_applied = Application.query.filter_by(job_id=job.id, student_id=user.id).first() is not None
+    
     return render_template('Job_details.html', job=job, has_applied=has_applied)
 
 @app.route('/apply_process/<int:job_id>', methods=['GET', 'POST'])
